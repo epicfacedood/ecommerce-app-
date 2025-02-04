@@ -16,6 +16,9 @@ a.active hr {
     Oxygen, Ubuntu, Cantarell, "Open Sans", "Helvetica Neue", sans-serif;
 }
 
+::-webkit-scrollbar {
+  display: none;
+}
 @media (max-width: 640px) {
   a.active {
     background-color: black;
