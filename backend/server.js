@@ -10,11 +10,11 @@ import productRouter from "./routes/productRoute.js";
 const app = express();
 const port = process.env.PORT || 4000;
 connectDB();
-connectCloudinary;
+connectCloudinary();
 
 // Middlewares
 app.use(express.json());
-app.use(cors());
+app.use(cors({ origin: "*" }));
 
 // api endpoints
 app.use("/api/user", userRouter);
@@ -26,4 +26,5 @@ app.get("/", (req, res) => {
 
 app.listen(port, () => {
   console.log("Server started on PORT: " + port);
+  console.log("Cloudinary Secret:", process.env.CLOUDINARY_API_KEY);
 });

@@ -50,19 +50,6 @@ const addProduct = async (req, res) => {
     await product.save();
 
     res.json({ success: true, message: "product added" });
-
-    console.log(
-      name,
-      description,
-      price,
-      category,
-      subCategory,
-      sizes,
-      bestseller
-    );
-    console.log(imagesURL);
-
-    res.json({});
   } catch (error) {
     console.log(error);
     res.json({ success: false, message: error.message });
