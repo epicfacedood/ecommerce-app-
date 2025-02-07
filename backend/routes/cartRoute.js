@@ -7,7 +7,7 @@ import {
 import authUser from "../middleware/auth.js";
 
 const cartRouter = express.Router();
-cartRouter.post("/get", authUser, getUserCartData);
+cartRouter.get("/get", authUser, getUserCartData);
 cartRouter.post("/add", authUser, addToCart);
 cartRouter.post("/update", authUser, updateCart);
 
