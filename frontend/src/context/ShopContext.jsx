@@ -45,7 +45,6 @@ const ShopContextProvider = (props) => {
     setCartItems(cartData);
 
     if (token) {
-      console.log(token);
       try {
         const response = await axios.post(
           backendUrl + "/api/cart/add",
@@ -88,6 +87,21 @@ const ShopContextProvider = (props) => {
     cartData[itemId][size] = quantity;
 
     setCartItems(cartData);
+
+    if (token) {
+      try {
+        await axios.post(
+          backendUrl + "/api/cart/update",
+          { itemId, size, quantity },
+          {
+            headers: { Authorization: `Bearer ${token}` },
+          }
+        );
+      } catch (error) {
+        console.log(error);
+        toast.error(error.message);
+      }
+    }
   };
 
   const getCartAmount = () => {
@@ -120,15 +134,48 @@ const ShopContextProvider = (props) => {
     }
   };
 
+  const getUserCart = async (token) => {
+    try {
+      const response = await axios.post(
+        backendUrl + "/api/cart/get",
+        {},
+        {
+          headers: { Authorization: `Bearer ${token}` },
+        }
+      );
+      if (response.data.success) {
+        console.log("Cart Data Retrieved:", response.data.cartData); // Log the cart data
+        setCartItems(response.data.cartData);
+        localStorage.setItem(
+          "cartItems",
+          JSON.stringify(response.data.cartData)
+        ); // Save cart items to local storage
+      } else {
+        console.log("Failed to retrieve the cart data");
+      }
+    } catch (error) {
+      console.log(error);
+      toast.error(error.message);
+    }
+  };
+
   useEffect(() => {
     getProductsData();
   }, []);
 
   useEffect(() => {
+    const savedCartItems = JSON.parse(localStorage.getItem("cartItems")) || {};
+    setCartItems(savedCartItems);
+  }, []);
+
+  useEffect(() => {
+    console.log("i am indeed being triggered");
     if (!token && localStorage.getItem("token")) {
+      console.log("asldfnjl");
       setToken(localStorage.getItem("token"));
+      getUserCart(localStorage.getItem("token"));
     }
-  });
+  }, []);
 
   const value = {
     products,
