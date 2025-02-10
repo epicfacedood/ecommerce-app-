@@ -1,4 +1,4 @@
-import React, { useContext, useState } from "react";
+import React, { useContext, useEffect, useState } from "react";
 import Title from "../components/TItle";
 import CartTotal from "../components/cartTotal";
 import { assets } from "../assets/assets";
@@ -40,7 +40,6 @@ const PlaceOrder = () => {
     event.preventDefault();
     try {
       let orderItems = [];
-
       for (const items in cartItems) {
         for (const item in cartItems[items]) {
           if (cartItems[items][item] > 0) {
@@ -62,6 +61,9 @@ const PlaceOrder = () => {
         amount: getCartAmount() + delivery_fee,
       };
 
+      console.log("Order Data:", orderData); // Log orderData to check its state
+      console.log("Method:", method); // Log method to check its state
+
       switch (method) {
         case "cod":
           try {
@@ -70,25 +72,47 @@ const PlaceOrder = () => {
               orderData,
               { headers: { Authorization: `Bearer ${token}` } }
             );
-            console.log(response.data.success);
             if (response.data.success) {
               setCartItems({});
               navigate("/orders");
             } else {
-              toast.erorr(response.data.message);
+              toast.error(response.data.message);
             }
           } catch (error) {
             console.error("error placing order");
             toast.error("failed to place order");
           }
+          break;
 
+        case "stripe":
+          try {
+            const responseStripe = await axios.post(
+              backendUrl + "/api/order/stripe",
+              orderData,
+              { headers: { Authorization: `Bearer ${token}` } }
+            );
+            console.log("Stripe response:", responseStripe); // Log the full response
+
+            if (responseStripe.data.success) {
+              const { session_url } = responseStripe.data;
+              console.log("Redirecting to:", session_url); // Log the session URL
+              window.location.replace(session_url);
+            } else {
+              console.error("Stripe error:", responseStripe.data); // Log the error response
+              toast.error(responseStripe.data.message);
+            }
+          } catch (error) {
+            console.error("error with stripe payment", error);
+            toast.error("failed to initiate stripe payment");
+          }
           break;
 
         default:
           break;
       }
-      console.log(orderItems);
-    } catch (error) {}
+    } catch (error) {
+      console.error("error in onSubmitHandler", error);
+    }
   };
 
   return (
@@ -190,17 +214,7 @@ const PlaceOrder = () => {
               ></p>
               <img className="h-5 mx-4" src={assets.stripe_logo} alt="" />
             </div>
-            <div
-              onClick={() => setMethod("razorpay")}
-              className="flex items-center gap-3 border p-2 px-3 cursor-pointer"
-            >
-              <p
-                className={`min-w-3.5 h-3.5 border rounded-full ${
-                  method === "razorpay" ? "bg-green-400" : ""
-                }`}
-              ></p>
-              <img className="h-5 mx-4" src={assets.razorpay_logo} alt="" />
-            </div>
+
             <div
               onClick={() => setMethod("cod")}
               className="flex items-center gap-3 border p-2 px-3 cursor-pointer"
