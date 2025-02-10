@@ -19,8 +19,8 @@ const placeOrder = async (req, res) => {
       items,
       amount,
       address,
-      paymentMethod,
-      payment,
+      paymentMethod: "COD",
+      payment: false,
       date: Date.now(),
     };
 
