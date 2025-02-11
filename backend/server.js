@@ -15,7 +15,8 @@ connectDB();
 connectCloudinary();
 
 //CORS configuration
-
+//This works! But allowing any origin to access the
+// credentials poses a security risk.
 const corsOptions = {
   origin: "*",
   credentials: true, //access-control-allow-credentials:true
