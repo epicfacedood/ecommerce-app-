@@ -19,7 +19,8 @@ connectCloudinary();
 // credentials poses a security risk.
 const corsOptions = {
   origin: [
-    "https://ecommerce-frontend-theta-blue.vercel.app",
+    "https://ecommerce-frontend-theta-blue.vercel.app", //FRONTEND LIVE WEBAPP ON VERCEL
+    "https://ecommerce-admin-omega-nine.vercel.app", //ADMIN LIVE WEBAPP ON VERCEL
     "http://localhost:3000", // for local development
     "http://localhost:5173", // for Vite's default port
     "http://localhost:5174",
