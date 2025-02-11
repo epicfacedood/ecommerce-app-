@@ -18,7 +18,12 @@ connectCloudinary();
 //This works! But allowing any origin to access the
 // credentials poses a security risk.
 const corsOptions = {
-  origin: "*",
+  origin: [
+    "https://ecommerce-frontend-theta-blue.vercel.app/",
+    "http://localhost:3000", // for local development
+    "http://localhost:5173", // for Vite's default port
+    "http://localhost:5174",
+  ],
   credentials: true, //access-control-allow-credentials:true
   optionSuccessStatus: 200,
 };
